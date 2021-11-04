@@ -117,9 +117,9 @@ class ModelFactory:
                         field_name = field['field']
                         db_field = field['db_field']
                         model = None
-                        for fn, model in [*reverse_many_fields, *many_fields]:
+                        for fn, md in [*reverse_many_fields, *many_fields]:
                             if db_field == fn:
-                                model = model
+                                model = md
                                 break
                         serializer = create_simple_serializer(model, field["fields"])
                         self.extra_serializer_attrs[field_name] = SerializerMethodField()

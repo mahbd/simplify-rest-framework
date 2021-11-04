@@ -1,6 +1,6 @@
-import os
 import pathlib
-from setuptools import setup, find_packages
+
+from setuptools import setup
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
@@ -11,7 +11,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="simplify-rest-framework",
-    version="0.10.0",
+    version="0.10.1",
     description="Simplified version of django rest framework",
     long_description=README,
     long_description_content_type="text/markdown",

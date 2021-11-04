@@ -3,8 +3,6 @@ from rest_framework.viewsets import ModelViewSet
 
 
 def create_view_set(factory_class):
-    factory_class = factory_class
-
     class FactoryViewSet(ModelViewSet):
         authentication_classes = factory_class.authentication_classes
         filterset_fields = factory_class.filterset_fields

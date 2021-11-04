@@ -53,29 +53,29 @@ class ProblemFactory(ModelFactory):
                                 ]
         self.filterset_fields = ['user', 'submission__verdict', 'submission__user']
 
-    def get_queryset(self1, self):
-        if self.request.GET.get('unsolved_problems'):
+    def get_queryset(self, self2):
+        if self2.request.GET.get('unsolved_problems'):
             solved_ids = [problem.id for
                           problem in Problem.objects.only('id').filter(submission__verdict='AC',
-                                                                       submission__user=self.request.user)]
+                                                                       submission__user=self2.request.user)]
             return Problem.objects.exclude(id__in=solved_ids).filter(hidden_till__lt=timezone.now())
-        if self.request.GET.get('test_problems'):
-            q = Q(contest__writers=self.request.user) | Q(contest__testers=self.request.user)
+        if self2.request.GET.get('test_problems'):
+            q = Q(contest__writers=self2.request.user) | Q(contest__testers=self2.request.user)
             return Problem.objects.filter(q, contest__start_time__gt=timezone.now())
-        return super().get_queryset(self)
+        return super().get_queryset(self2)
 
-    def get_serializer_class(self1, self):
-        request = self.request
-        if self.kwargs.get('pk'):
-            if Problem.objects.filter(pk=self.kwargs.get('pk')).exists():
-                if self.request.user == Problem.objects.filter(pk=self.kwargs.get('pk')).first().user:
-                    self1.fields = self1.fields_for_owner
+    def get_serializer_class(self, self2):
+        request = self2.request
+        if self2.kwargs.get('pk'):
+            if Problem.objects.filter(pk=self2.kwargs.get('pk')).exists():
+                if self2.request.user == Problem.objects.filter(pk=self2.kwargs.get('pk')).first().user:
+                    self.fields = self.fields_for_owner
         elif request.method == 'POST':
-            self1.fields = self1.fields_for_owner
-            super().get_serializer_class(self)
+            self.fields = self.fields_for_owner
+            super().get_serializer_class(self2)
         else:
-            self1.fields = self1.fields_for_user
-        return super().get_serializer_class(self)
+            self.fields = self.fields_for_user
+        return super().get_serializer_class(self2)
 
 
 @register(Contest)
