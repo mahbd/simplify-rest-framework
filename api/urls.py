@@ -45,11 +45,11 @@ class ProblemFactory(ModelFactory):
         self.fields_for_owner = [
             "correct_code", "correct_lang", "description", "difficulty", "example_number", "hidden_till",
             "input_terms", "memory_limit", "notice", "output_terms", "time_limit", "title", "user", "created_at",
-            {"field": "test_cases", "db_field": "testcase_set", "fields": ["inputs", "output"]}
+            ("test_cases", "testcase_set", ["inputs", "output"])
         ]
         self.fields_for_user = ["description", "difficulty", "example_number",
                                 "input_terms", "memory_limit", "notice", "output_terms", "time_limit", "title", "user",
-                                {"field": "test_cases", "db_field": "testcase_set", "fields": ["inputs", "output"]}
+                                ("test_cases", "testcase_set", ["inputs", "output"])
                                 ]
         self.filterset_fields = ['user', 'submission__verdict', 'submission__user']
 
@@ -87,8 +87,7 @@ class ContestFactory(ModelFactory):
         self.permission_classes = [{'class': IsOwnerOrReadOnly, 'owner_fields': ['user', 'writers', 'testers']},
                                    IsAuthenticatedOrReadOnly]
         self.fields = ["description", "end_time", "start_time", "title", "user", "writers", "testers",
-                       {"field": "writers_detail", "db_field": "writers", "fields": ["username", "first_name", "last_name"]}
-                       ]
+                       ("writers_detail", "writers",  ["username", "first_name", "last_name"])]
         self.filterset_fields = ['user', 'writers', "testers"]
 
 
@@ -97,6 +96,7 @@ class TestCaseFactory(ModelFactory):
     def __init__(self):
         super().__init__()
         self.disabled_actions = ['update', 'partial_update']
+        self.fields = ["inputs", "output", "problem", ("problem_title", "problem__title"), "id"]
         self.auto_user_field = "user"
         self.readonly_fields = ["user"]
         self.permission_classes = [{'class': IsOwnerOrReadOnly, 'owner_fields': ['user']}, IsAuthenticatedOrReadOnly]

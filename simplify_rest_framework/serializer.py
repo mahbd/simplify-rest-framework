@@ -18,8 +18,13 @@ def create_new_serializer_class(super_self):
 
         def create(self, validated_data):
             if callable(super_self.create_instance):
-                return super_self.create_instance(self, validated_data)
-            return super().create(validated_data)
+                obj = super_self.create_instance(self, validated_data)
+            else:
+                obj = super().create(validated_data)
+            for new_field, field in super_self.annotated_fields.items():
+                value = get_annotated_attrs(obj, field.name)
+                setattr(obj, new_field, value)
+            return obj
 
         def update(self, instance, validated_data):
             if callable(super_self.update_instance):
@@ -27,6 +32,13 @@ def create_new_serializer_class(super_self):
             return super().update(instance, validated_data)
 
     return FactorySerializer
+
+
+def get_annotated_attrs(obj, name, pos=0):
+    if len(name.split('__')) > pos + 1:
+        return get_annotated_attrs(getattr(obj, name.split('__')[pos]), name, pos + 1)
+    elif len(name.split('__')) > pos:
+        return getattr(obj, name.split('__')[pos])
 
 
 def create_new_serializer(super_self, extra_attributes=None):

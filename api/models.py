@@ -29,7 +29,6 @@ class ContestProblem(models.Model):
         ordering = ('problem_char', )
 
 
-# TODO: Start and end time validator
 class Contest(models.Model):
     description = models.TextField(blank=True, null=True)
     end_time = models.DateTimeField(default=timezone.now)
