@@ -14,6 +14,8 @@ def create_new_serializer_class(super_self):
             if super_self.auto_user_field:
                 if self.context.get('request').user.is_authenticated:
                     attrs[super_self.auto_user_field] = self.context['request'].user
+            if callable(super_self.validate):
+                attrs = super_self.validate(self, attrs)
             return super().validate(attrs)
 
         def create(self, validated_data):

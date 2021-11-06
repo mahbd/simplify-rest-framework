@@ -1,6 +1,7 @@
 from django.db.models import Q
 from django.urls import path, include
 from django.utils import timezone
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from simplify_rest_framework import factories, register, ModelFactory
@@ -52,6 +53,11 @@ class ProblemFactory(ModelFactory):
                                 ("test_cases", "testcase_set", ["inputs", "output"])
                                 ]
         self.filterset_fields = ['user', 'submission__verdict', 'submission__user']
+
+    def validate(self, self2, attrs):
+        if attrs.get('difficulty', 500) < 500:
+            raise ValidationError("Difficulty must be greater than 500")
+        return attrs
 
     def get_queryset(self, self2):
         if self2.request.GET.get('unsolved_problems'):

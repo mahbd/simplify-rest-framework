@@ -62,6 +62,13 @@ class ProblemTestCase(TestCase):
         self.assertEqual(data['input_terms'], 'hello world')
         self.assertEqual(data['output_terms'], 'nice world')
 
+    def test_problem_low_difficulty(self):
+        c.force_login(self.user)
+        response = c.post(self.api_url, {'title': 'Test Problem', 'description': 'Test Description',
+                                         'input_terms': 'hello world',
+                                         'output_terms': 'nice world', 'difficulty': 100})
+        self.assertEqual(response.status_code, 400)
+
     def test_get_problem_list(self):
         response = c.get(self.api_url)
         self.assertEqual(response.status_code, 200)

@@ -109,7 +109,7 @@ class ModelFactory:
         relations = [(field, info.related_model, info.to_many, info.reverse) for field, info in
                      all_fields.relations.items()]
         fields = [*fields, *[field for field, _, _, reverse in relations if not reverse]]
-        if hasattr(deepcopy(self.model)(), 'id'): # include **id** if id is primary key
+        if hasattr(deepcopy(self.model)(), 'id'):  # include **id** if id is primary key
             fields.append('id')
         if self.fields:
             tem_fields = deepcopy(self.fields)
@@ -174,6 +174,9 @@ class ModelFactory:
                 for qqq in field[1]:
                     fields_to_query.add(qqq)
         return fields_to_query
+
+    def validate(self, self2, attrs):
+        return attrs
 
     def get_serializer_class(self, self2) -> Type[ModelSerializer]:
         super_self = self
