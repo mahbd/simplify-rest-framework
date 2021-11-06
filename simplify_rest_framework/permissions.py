@@ -1,23 +1,23 @@
 from django.contrib.auth import get_user_model
 from rest_framework import permissions
 
-
 User = get_user_model()
 
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
     Object-level permission to only allow owners of an object to edit it.
-    Assumes the model instance has an `owner` attribute or pass owner_field
+    Assumes the model instance has an `user` attribute or pass owner_field
     """
 
     def __init__(self, owner_fields=None):
         if owner_fields is None:
             owner_fields = ['user']
         self.owner_fields = owner_fields
+        self.unauthorized_readonly = True
 
     def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
+        if self.unauthorized_readonly and request.method in permissions.SAFE_METHODS:
             return True
         owners = []
         for field in self.owner_fields:
@@ -30,8 +30,18 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
                 continue
             if field_owners and isinstance(field_owners[0], User):
                 owners.extend(field_owners)
-        # print(owners)
         return request.user in owners or getattr(request.user, 'is_superuser', False)
+
+
+class IsOwner(IsOwnerOrReadOnly):
+    """
+    Object-level permission to only allow owners of an object to edit it.
+    Assumes the model instance has an `owner` attribute or pass owner_field
+    """
+
+    def __init__(self, owner_fields=None):
+        super().__init__(owner_fields=owner_fields)
+        self.unauthorized_readonly = False
 
 
 class HasContestOrReadOnly(permissions.BasePermission):
@@ -46,4 +56,3 @@ class HasContestOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         return False
-
