@@ -30,5 +30,5 @@ setup(
     ],
     packages=['simplify_rest_framework'],
     include_package_data=True,
-    install_requires=["django >= 3.2.0"],
+    install_requires=["django >= 3.2.0", "django-filter >= 21.1.0"],
 )
